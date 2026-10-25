@@ -1,12 +1,12 @@
-# Fomi — Frontend Developer Assessment
+# Fomi Frontend Developer Assessment
 
 Two deliverables in one Next.js app:
 
 | Route | What it is |
 | --- | --- |
 | `/` | Short overview with links to both parts |
-| `/implementation` | **Part A** — faithful, responsive build of the supplied image-generator mockup |
-| `/workspace` | **Part B** — *Fomi Studio*, an original creative-continuity workspace built around **Creative Branching** |
+| `/implementation` | **Part A:** a faithful, responsive build of the supplied image generator mockup |
+| `/workspace` | **Part B:** Fomi Studio, an original creative continuity workspace built around **Creative Branching** |
 
 Both run against a **mocked** backend. No real AI generation takes place; results come from a local image library.
 
@@ -39,18 +39,18 @@ Tests use the locally installed Google Chrome. To use Playwright's bundled Chrom
   "model": "fomi-portrait", "aspectRatio": "2:3", "count": 4,
   "style": "cinematic", "guidance": 7, "seed": null, "negativePrompt": "" }
 
-// Part B — a branch of an existing image
+// Part B: a branch of an existing image
 { "collection": "workspace", "prompt": "…", "model": "studio-v3", "aspectRatio": "4:5", "count": 4,
   "parentGenerationId": "g2", "parentImageId": "g2_0",
   "parentLook": { "base": "street", "grade": "golden", "framing": "standard" },
   "variation": { "intent": "lighting", "note": "colder" } }
 ```
 
-- **200** — `{ generationId, status: "completed", prompt, model, aspectRatio, seed, parentGenerationId, createdAt, images: [{ id, url, width, height, alt, … }] }`
-- **400** — malformed JSON · **422** — invalid fields (`error.fields` maps field → message)
-- **503** — simulated outage (`error.retryable: true`)
+- **200:** `{ generationId, status: "completed", prompt, model, aspectRatio, seed, parentGenerationId, createdAt, images: [{ id, url, width, height, alt, … }] }`
+- **400:** malformed JSON. **422:** invalid fields (`error.fields` maps each field to a message).
+- **503:** simulated outage (`error.retryable: true`).
 
-Behaviour is deterministic: the same prompt and seed return the same images, ranked by prompt keywords. A short simulated delay makes loading states visible. Add `"scenario": "error" | "empty"` to exercise failure paths — both UIs expose this under **Support → Demo controls** (Part A) and **Settings → Demo controls** (Part B).
+Behavior is deterministic: the same prompt and seed return the same images, ranked by prompt keywords. A short simulated delay makes loading states visible. Add `"scenario": "error" | "empty"` to trigger the failure paths. Both apps expose this under **Support > Demo controls** (Part A) and **Settings > Demo controls** (Part B).
 
 ### `GET /api/projects/:projectId`
 
@@ -60,7 +60,7 @@ Returns the seeded Part B project (`atlas-fw26`) after a short delay; unknown id
 
 **Part A:** type a prompt and press **Generate** (or Ctrl+Enter). Image/Video switch modes; the header icons filter the feed (Home, Images, Videos, Saved); history thumbnails jump to their generation; hover a result to save or download; click to preview (←/→, Esc). The moon toggles a dark theme.
 
-**Part B:** the project opens on a branch (G4). Hover an image → **Branch** → choose *Lighting*, *Framing*, *Subject* (runs immediately) or *Remix* (edit the prompt in the composer). The **Branches** panel shows lineage — click a row or use the arrow keys. Click images to select them (across branches) → **Compare**. Star to keep; **Kept assets** in the rail collects them. Shortcuts: `[` `]` previous/next run, Alt+↑ parent, `C` compare, Esc clear selection.
+**Part B:** the project opens on a branch (G4). Hover over an image, choose **Branch**, then pick Lighting, Framing or Subject (these run immediately) or Remix (which opens the prompt in the composer). The **Branches** panel shows the lineage; click a row or use the arrow keys to move through it. Click images to select them, including across branches, then choose **Compare**. Star an image to keep it; **Kept assets** in the rail collects them. Shortcuts: `[` `]` previous/next run, Alt+↑ parent, `C` compare, Esc clear selection.
 
 State is stored in `localStorage`; **Reset** lives in each app's demo controls.
 
@@ -70,16 +70,16 @@ See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for structure, state manage
 
 Other docs:
 
-- [docs/PRODUCT_THINKING.md](docs/PRODUCT_THINKING.md) — Part B product thinking (the six assessment questions)
-- [docs/PART_A_SPEC.md](docs/PART_A_SPEC.md) — measurements and colors taken from the mockup, observed vs. inferred
-- [docs/CREDITS.md](docs/CREDITS.md) — image sources (Unsplash License)
-- [docs/SUBMISSION.md](docs/SUBMISSION.md) — submission summary
+- [docs/PRODUCT_THINKING.md](docs/PRODUCT_THINKING.md): Part B product thinking (the six assessment questions)
+- [docs/PART_A_SPEC.md](docs/PART_A_SPEC.md): measurements and colors taken from the mockup, with observed and inferred details separated
+- [docs/CREDITS.md](docs/CREDITS.md): image sources (Unsplash License)
+- [docs/SUBMISSION.md](docs/SUBMISSION.md): submission summary
 
 ## Known limitations
 
 - Generation is mocked; the image library is small, so unrelated prompts return loosely matching images.
 - Persistence is per-browser `localStorage`.
-- Part B variations are pre-rendered color grades and crops of six base photos — they demonstrate continuity, not image quality.
+- Part B variations are pre-rendered color grades and crops of six base photos. They demonstrate continuity, not image quality.
 - Part A's Generate button keeps the mockup's white-on-coral colors (2.2:1 contrast) for fidelity; this is the one documented accessibility exception. All other text meets WCAG AA.
 - Video results in Part A are short pan/zoom clips rendered from stills and labelled as mock previews.
 

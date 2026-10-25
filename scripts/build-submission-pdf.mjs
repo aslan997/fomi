@@ -3,7 +3,7 @@
 // Usage:
 //   VERCEL_URL=https://your-app.vercel.app CANDIDATE_NAME="Your Name" npm run submission:pdf
 //
-// Placeholders that aren't provided stay visible as "[… — add before submitting]"
+// Placeholders that aren't provided stay visible as "[…: add before submitting]"
 // so an unfinished PDF can't be mistaken for a final one.
 import fs from "node:fs";
 import path from "node:path";
@@ -15,11 +15,11 @@ const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 
 const url = (process.env.VERCEL_URL ?? "").replace(/\/$/, "");
 const name = process.env.CANDIDATE_NAME ?? "";
-const product = read("docs/PRODUCT_THINKING.md").replace(/^# .*\n/, "## Product thinking — Part B\n");
+const product = read("docs/PRODUCT_THINKING.md").replace(/^# .*\n/, "## Product Thinking (Part B)\n");
 
 const markdown = read("docs/SUBMISSION.md")
-  .replaceAll("{{VERCEL_URL}}", url || "[Vercel URL — add before submitting]")
-  .replaceAll("{{CANDIDATE_NAME}}", name || "[Name — add before submitting]")
+  .replaceAll("{{VERCEL_URL}}", url || "[Vercel URL: add before submitting]")
+  .replaceAll("{{CANDIDATE_NAME}}", name || "[Name: add before submitting]")
   .replace("{{PRODUCT_THINKING}}", product);
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
