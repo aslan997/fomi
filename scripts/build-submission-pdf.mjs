@@ -38,7 +38,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   h2, h3 { break-after: avoid; } table, li { break-inside: avoid; }
 </style></head><body>${marked.parse(markdown)}</body></html>`;
 
-const out = path.join(root, "docs/submission.pdf");
+const out = process.env.SUBMISSION_OUT ? path.resolve(process.env.SUBMISSION_OUT) : path.join(root, "docs/submission.pdf");
 const browser = await chromium.launch({ channel: process.env.PW_CHANNEL ?? "chrome" });
 const page = await browser.newPage();
 await page.setContent(html, { waitUntil: "load" });
