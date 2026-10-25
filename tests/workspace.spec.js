@@ -143,3 +143,21 @@ test("empty submit is explained inline and clears on typing", async ({ page, isM
   await expect(prompt).not.toHaveAttribute("aria-invalid");
   await expect(page.locator(".ws").getByRole("alert")).toHaveCount(0);
 });
+
+test("composer settings (ratio, count, model) change and apply to the run", async ({ page, isMobile }) => {
+  if (isMobile) await page.getByRole("button", { name: "New direction" }).click();
+  await page.getByText("16:9", { exact: true }).click();
+  await expect(page.getByRole("radio", { name: "16:9" })).toBeChecked();
+  await page.getByRole("group", { name: "Images per run" }).getByText("2", { exact: true }).click();
+  await expect(page.getByRole("group", { name: "Images per run" }).getByRole("radio", { name: "2" })).toBeChecked();
+
+  await page.getByRole("button", { name: /^Model:/ }).click();
+  await page.getByRole("option", { name: /Photoreal/ }).click();
+  await expect(page.getByRole("button", { name: /^Model: Photoreal/ })).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Prompt" }).fill("Desert road at golden hour, wide");
+  await page.getByRole("button", { name: /^Generate$/ }).click();
+  await expect(page.getByRole("heading", { name: "G7", exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("16:9").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /^G7·\d:/ })).toHaveCount(2);
+});
