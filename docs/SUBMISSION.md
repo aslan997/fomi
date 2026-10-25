@@ -1,13 +1,13 @@
 # Fomi — Frontend Developer Assessment
 
 - **Candidate:** {{CANDIDATE_NAME}}
-- **Live app:** {{VERCEL_URL}}
-- **Repository:** <https://github.com/aslan997/fomi>
+- **Live app:** [{{VERCEL_URL}}]({{VERCEL_URL}})
+- **Repository:** [https://github.com/aslan997/fomi](https://github.com/aslan997/fomi)
 
 | Deliverable | Link |
 | --- | --- |
-| Part A — Mockup implementation | {{VERCEL_URL}}/implementation |
-| Part B — Original workspace (*Fomi Studio*) | {{VERCEL_URL}}/workspace |
+| Part A — Mockup implementation | [{{VERCEL_URL}}/implementation]({{VERCEL_URL}}/implementation) |
+| Part B — Original workspace (*Fomi Studio*) | [{{VERCEL_URL}}/workspace]({{VERCEL_URL}}/workspace) |
 | Product thinking document | Included below · `docs/PRODUCT_THINKING.md` |
 | Architecture & engineering notes | `docs/ARCHITECTURE.md` |
 
@@ -22,7 +22,7 @@
 - Next.js 16 App Router, JavaScript, Tailwind v4 tokens; no UI kit or state library.
 - Mock API with shared validation, deterministic results and simulated failure modes; Part B variations are pre-rendered grade × framing families so branches are visibly continuous with their parents.
 - Native `<dialog>` modals, ARIA tree pattern, live-region announcements, reduced-motion support.
-- 50 Playwright tests (desktop + mobile) covering API, both apps' workflows and axe accessibility scans; lint and production build clean.
+- 54 Playwright tests (desktop + mobile) covering API, both apps' workflows and axe accessibility scans; lint and production build clean.
 
 ## How to review
 

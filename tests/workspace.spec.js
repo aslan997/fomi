@@ -131,3 +131,15 @@ test("no horizontal overflow", async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test("empty submit is explained inline and clears on typing", async ({ page, isMobile }) => {
+  if (isMobile) await page.getByRole("button", { name: "New direction" }).click();
+  const prompt = page.getByRole("textbox", { name: "Prompt" });
+  await page.getByRole("button", { name: /^Generate$/ }).click();
+  await expect(prompt).toBeFocused();
+  await expect(prompt).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator(".ws").getByRole("alert")).toContainText("Add a few words");
+  await prompt.fill("Camel coat, rainy street");
+  await expect(prompt).not.toHaveAttribute("aria-invalid");
+  await expect(page.locator(".ws").getByRole("alert")).toHaveCount(0);
+});

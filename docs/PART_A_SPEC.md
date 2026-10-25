@@ -37,7 +37,7 @@ Measurements were taken from the screenshot and scaled ×1.06 to a 1440px deskto
 - "Gallery" opens a grid of all outputs; "Support" opens help + keyboard shortcuts + demo controls (simulate error / empty result).
 - Moon toggles a dark theme. Avatar opens an account menu with mock credit balance.
 - "Model" on a prompt card opens the generation details (model, ratio, seed, style) with "Reuse settings" and "Copy prompt".
-- Option chips are native `<select>` elements styled as pills (accessible, mobile-native pickers).
+- Option chips open a custom listbox (`components/ui/Select.js`) with previews: ratio shapes, result-count glyphs and model descriptions.
 
 ## Deliberate deviations from the mockup
 

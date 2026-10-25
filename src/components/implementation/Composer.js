@@ -11,6 +11,7 @@ import {
   PROMPT_MAX_LENGTH,
   STYLES,
 } from "@/lib/generation-options";
+import { CountGlyph, RatioGlyph, Select } from "@/components/ui/Select";
 import { creditCost, useStudio } from "./StudioProvider";
 
 function ModeSwitch() {
@@ -131,32 +132,40 @@ function PromptBox() {
   );
 }
 
-/** Native <select> styled as the mockup's pill chip. The visible text is decorative; the select is the control. */
-function OptionChip({ label, value, onChange, options, display, className }) {
+const RATIO_NAMES = { "1:1": "Square", "3:4": "Portrait", "2:3": "Tall portrait", "4:3": "Classic", "16:9": "Widescreen", "9:16": "Vertical" };
+
+// Panel styling shared by the three chips (Part A tokens; follows dark theme).
+const selectClasses = {
+  panel: "rounded-2xl border border-st-panel-border bg-st-raised p-1.5 font-poppins text-st-ink shadow-st-pop",
+  option: "rounded-xl px-2.5 py-2 text-[12px]",
+  optionActive: "bg-st-pill",
+  description: "text-[10.5px] text-st-muted",
+  check: "text-st-accent-strong",
+};
+
+/** The mockup's pill chip as the trigger of a custom listbox. */
+function OptionChip({ label, value, onChange, options, display, className, minWidth }) {
   return (
-    <div
-      className={clsx(
-        "relative flex h-[26px] items-center justify-between gap-1 rounded-[9px] bg-st-chip pr-1 pl-2 text-[10px] whitespace-nowrap text-st-ink-2 focus-within:outline-2 focus-within:outline-(--focus-ring)",
+    <Select
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={options}
+      minWidth={minWidth}
+      classes={selectClasses}
+      triggerClassName={clsx(
+        "group flex h-[26px] items-center justify-between gap-1 rounded-[9px] bg-st-chip pr-1 pl-2 text-[10px] whitespace-nowrap text-st-ink-2 transition-shadow duration-150 hover:shadow-[0_0_0_1px_var(--st-panel-border)] aria-expanded:shadow-[0_0_0_1.5px_var(--st-accent)]",
         className
       )}
-    >
-      <span aria-hidden="true">{display}</span>
-      <span aria-hidden="true" className="grid h-[16px] w-[18px] place-items-center rounded-full bg-st-pill">
-        <ChevronDown size={11} />
-      </span>
-      <select
-        aria-label={label}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="absolute inset-0 cursor-pointer appearance-none opacity-0"
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </div>
+      trigger={
+        <>
+          <span>{display}</span>
+          <span aria-hidden="true" className="grid h-[16px] w-[18px] shrink-0 place-items-center rounded-full bg-st-pill">
+            <ChevronDown size={11} className="transition-transform duration-200 group-aria-expanded:rotate-180" />
+          </span>
+        </>
+      }
+    />
   );
 }
 
@@ -169,30 +178,56 @@ function OptionsRow() {
       <OptionChip
         label={`Number of ${noun.toLowerCase()}`}
         value={composer.count}
-        onChange={(v) => updateComposer({ count: Number(v) })}
-        options={IMAGE_COUNTS.map((n) => ({ value: n, label: `${n} ${n === 1 ? noun.slice(0, -1) : noun}` }))}
+        onChange={(v) => updateComposer({ count: v })}
+        options={IMAGE_COUNTS.map((n) => ({
+          value: n,
+          label: `${n} ${n === 1 ? noun.slice(0, -1) : noun}`,
+          description: `${n * (composer.mode === "video" ? 4 : 1)} credit${n * (composer.mode === "video" ? 4 : 1) > 1 ? "s" : ""}`,
+          icon: <CountGlyph count={n} className="text-st-ink-2" />,
+        }))}
         display={`${composer.count} ${noun}`}
         className="flex-[1.25]"
+        minWidth={170}
       />
       <OptionChip
         label="Aspect ratio"
         value={composer.aspectRatio}
         onChange={(v) => updateComposer({ aspectRatio: v })}
-        options={ASPECT_RATIOS[composer.mode].map((r) => ({ value: r, label: r }))}
+        options={ASPECT_RATIOS[composer.mode].map((r) => ({
+          value: r,
+          label: r,
+          description: RATIO_NAMES[r],
+          icon: (
+            <span className="grid h-5 w-5 place-items-center text-st-ink-2">
+              <RatioGlyph ratio={r} size={16} />
+            </span>
+          ),
+        }))}
         display={composer.aspectRatio}
         className="flex-[0.85]"
+        minWidth={170}
       />
       <OptionChip
         label="Model"
         value={composer.model}
         onChange={(v) => updateComposer({ model: v })}
-        options={MODELS[composer.mode].map((m) => ({ value: m.id, label: `${m.label} — ${m.description}` }))}
+        options={MODELS[composer.mode].map((m) => ({
+          value: m.id,
+          label: m.label,
+          description: m.description,
+          icon: (
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-st-segment text-[11px] font-semibold text-st-ink">
+              {m.label[0]}
+            </span>
+          ),
+        }))}
         display={
           <>
             Model: <b className="font-semibold text-st-ink">{model?.label}</b>
           </>
         }
         className="flex-[1.6]"
+        minWidth={264}
       />
     </div>
   );

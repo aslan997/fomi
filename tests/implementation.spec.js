@@ -112,3 +112,25 @@ test("no horizontal overflow", async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test("custom selects work with mouse and keyboard", async ({ page }) => {
+  const ratio = page.getByRole("button", { name: /^Aspect ratio/ });
+  await ratio.click();
+  const list = page.getByRole("listbox", { name: "Aspect ratio" });
+  await expect(list).toBeVisible();
+  await list.getByRole("option", { name: /16:9/ }).click();
+  await expect(ratio).toHaveAttribute("aria-label", "Aspect ratio: 16:9");
+  await expect(list).toBeHidden();
+
+  // Keyboard: open with ArrowDown, move, select with Enter; Escape returns focus.
+  await ratio.focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(list).toBeFocused();
+  await page.keyboard.press("Home");
+  await page.keyboard.press("Enter");
+  await expect(ratio).toHaveAttribute("aria-label", "Aspect ratio: 1:1");
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Escape");
+  await expect(list).toBeHidden();
+  await expect(ratio).toBeFocused();
+});
