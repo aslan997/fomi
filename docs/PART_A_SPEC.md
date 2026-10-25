@@ -1,4 +1,4 @@
-# Part A — Design Specification
+# Part A: Design Specification
 
 Reference: [`docs/reference/part-a-mockup.png`](reference/part-a-mockup.png) (1374×671 screenshot, app frame ≈1355px wide).
 Measurements were taken from the screenshot and scaled ×1.06 to a 1440px desktop viewport. Colors were sampled with a 3×3 average.
@@ -47,7 +47,7 @@ Measurements were taken from the screenshot and scaled ×1.06 to a 1440px deskto
 | Generate button | White on `#E39C85` | Unchanged | Kept for fidelity (2.2:1). The single documented contrast exception; excluded by name in the axe test. Coral buttons that are *not* in the mockup use dark text (≈7:1). |
 | Generate with an empty prompt | Button looks enabled | Still looks enabled; pressing it shows an inline hint and focuses the prompt | Matches the mockup's full-strength button while avoiding a silent no-op. |
 | Image tiles | Same woman in every tile | Different redhead portraits | Generated imagery wasn't available; licensed stock can't supply one model 8×. |
-| Feed order < 1024px | — | Newest first | The composer stacks above the feed on small screens, so new results stay next to it. |
+| Feed order < 1024px | Not shown | Newest first | The composer stacks above the feed on small screens, so new results stay next to it. |
 
 ## Responsive plan
 
