@@ -132,7 +132,7 @@ function Shell() {
   }, [activeId]);
 
   return (
-    <div className="ws min-h-dvh font-sans lg:grid lg:h-dvh lg:grid-cols-[56px_300px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[56px_320px_minmax(0,1fr)_320px]">
+    <div data-portal-root className="ws min-h-dvh font-sans lg:grid lg:h-dvh lg:grid-cols-[56px_300px_minmax(0,1fr)] lg:overflow-hidden xl:grid-cols-[56px_320px_minmax(0,1fr)_320px]">
       <div className="hidden lg:block">
         <IconRail />
       </div>

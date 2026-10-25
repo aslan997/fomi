@@ -3,12 +3,30 @@
 import Image from "next/image";
 import { useId, useRef, useState } from "react";
 import clsx from "clsx";
-import { ArrowUp, ChevronDown, Dices, GitBranch, LoaderCircle, Lock, LockOpen, X } from "lucide-react";
+import { Aperture, ArrowUp, ChevronDown, Dices, GitBranch, LoaderCircle, Lock, LockOpen, Sparkle, X, Zap } from "lucide-react";
+import { Select } from "@/components/ui/Select";
 import { NEGATIVE_PROMPT_MAX_LENGTH, PROMPT_MAX_LENGTH } from "@/lib/generation-options";
 import { WS_COUNTS, WS_MODELS, WS_RATIOS, describeLook } from "@/lib/workspace/options";
 import { useWorkspace } from "./WorkspaceProvider";
 
 const labelClass = "mb-1.5 block text-[11px] font-medium text-ws-text-2";
+
+// A small, distinct mark per model so the picker reads at a glance.
+const MODEL_MARKS = {
+  "studio-v3": { icon: Sparkle, tone: "bg-ws-accent-soft text-ws-accent" },
+  photoreal: { icon: Aperture, tone: "bg-[rgb(120_170_255/0.14)] text-[#9cc0ff]" },
+  draft: { icon: Zap, tone: "bg-[rgb(150_220_160/0.13)] text-[#a6dcae]" },
+};
+
+function ModelMark({ id }) {
+  const mark = MODEL_MARKS[id] ?? MODEL_MARKS["studio-v3"];
+  const Icon = mark.icon;
+  return (
+    <span aria-hidden="true" className={clsx("grid h-8 w-8 shrink-0 place-items-center rounded-md", mark.tone)}>
+      <Icon size={15} />
+    </span>
+  );
+}
 
 function Segmented({ label, options, value, onChange, name }) {
   return (
@@ -190,25 +208,37 @@ export function Composer() {
       </div>
 
       <div>
-        <label htmlFor={`${id}-model`} className={labelClass}>
+        <span className={labelClass} aria-hidden="true">
           Model
-        </label>
-        <div className="relative">
-          <select
-            id={`${id}-model`}
-            value={composer.model}
-            onChange={(e) => updateComposer({ model: e.target.value })}
-            className="w-full cursor-pointer appearance-none rounded-lg border border-ws-line bg-ws-bg py-2 pr-8 pl-2.5 text-[12px] text-ws-text focus:border-ws-line-strong focus:outline-none"
-          >
-            {WS_MODELS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.label} — {m.description}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={14} className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-ws-muted" aria-hidden="true" />
-        </div>
-        <p className="mt-1 text-[11px] text-ws-muted">{model?.description}</p>
+        </span>
+        <Select
+          label="Model"
+          nameFromContent
+          value={composer.model}
+          onChange={(v) => updateComposer({ model: v })}
+          options={WS_MODELS.map((m) => ({ value: m.id, label: m.label, description: m.description, icon: <ModelMark id={m.id} /> }))}
+          classes={{
+            panel: "rounded-xl border border-ws-line-strong bg-ws-surface p-1 font-sans text-ws-text shadow-ws-pop",
+            option: "rounded-lg px-2 py-2 text-[13px]",
+            optionActive: "bg-ws-overlay",
+            description: "text-[11px] text-ws-muted",
+            check: "text-ws-accent",
+          }}
+          triggerClassName="group flex w-full items-center gap-2.5 rounded-lg border border-ws-line bg-ws-bg p-1.5 pr-2.5 text-left transition-colors duration-150 hover:border-ws-line-strong aria-expanded:border-ws-accent/60"
+          trigger={
+            <>
+              <ModelMark id={model?.id} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[12px] text-ws-text">
+                  <span className="sr-only">Model: </span>
+                  {model?.label}
+                </span>
+                <span className="block truncate text-[11px] text-ws-muted">{model?.description}</span>
+              </span>
+              <ChevronDown size={14} className="shrink-0 text-ws-muted transition-transform duration-200 group-aria-expanded:rotate-180" aria-hidden="true" />
+            </>
+          }
+        />
       </div>
 
       <Segmented label="Aspect ratio" name="ws-ratio" options={WS_RATIOS} value={composer.aspectRatio} onChange={(v) => updateComposer({ aspectRatio: v })} />

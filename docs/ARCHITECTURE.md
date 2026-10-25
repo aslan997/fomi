@@ -21,7 +21,7 @@ src/
     api/generate/route.js        mocked generation (both parts)
     api/projects/[projectId]/    mocked project load (Part B)
   components/
-    ui/                          Dialog, Popover — shared, unstyled-by-default primitives
+    ui/                          Dialog, Popover, Select — shared, unstyled-by-default primitives
     implementation/              Part A (isolated so B can't affect its fidelity)
     workspace/                   Part B
   hooks/                         usePersistentReducer, useMediaQuery
@@ -70,6 +70,7 @@ So a branch is visibly continuous with its parent — the core claim of the prod
 ## Accessibility
 
 - Native `<dialog>` for every modal (preview, gallery, compare, branch drawer).
+- Dropdowns use a custom `Select` (`components/ui/Select.js`) following the ARIA select-only combobox pattern: focus moves to the listbox, `aria-activedescendant` tracks the active option, ↑/↓/Home/End/Enter/Escape and type-ahead work. The panel is portalled into the themed app root and positioned `fixed`, so scrolling panels can’t clip it, and it flips above the trigger when there’s no room below. Native `<select>` was replaced because its OS-drawn menu can’t show the ratio/model previews or match either theme.
 - Branch history implements the **ARIA tree pattern**: one tab stop (roving `tabIndex`), ↑/↓, Home/End, → expand/enter, ← collapse/parent, Enter/Space open.
 - Image cards are real buttons (`aria-pressed` for selection); hover-revealed actions are also revealed on focus and always visible on touch (`@media (hover: none)`).
 - Prompt diffs use `<ins>`/`<del>` with screen-reader prefixes ("added:", "removed:").

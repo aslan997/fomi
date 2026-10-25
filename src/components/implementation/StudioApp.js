@@ -26,7 +26,7 @@ const gutter = "px-4 sm:px-6 lg:pr-10 lg:pl-[52px]";
 export function StudioApp() {
   return (
     <StudioProvider>
-      <div className="studio min-h-dvh pb-24 font-poppins sm:pb-10">
+      <div data-portal-root className="studio min-h-dvh pb-24 font-poppins sm:pb-10">
         {/* Header + history stay pinned on desktop; the feed scrolls beneath them as in the mockup. */}
         <div className="bg-st-page lg:sticky lg:top-0 lg:z-20">
           <header className={`grid h-16 grid-cols-[auto_1fr] items-center gap-3 sm:h-[92px] sm:grid-cols-[1fr_auto_1fr] ${gutter}`}>
