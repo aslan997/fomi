@@ -227,7 +227,7 @@ function PromptField({ invalid, onInvalidClear, onSubmit, fieldRef, frameRef }) 
 }
 
 export function Composer() {
-  const { composer, submitComposer, pending, branchFromId } = useWorkspace();
+  const { composer, updateComposer, submitComposer, pending, branchFromId } = useWorkspace();
   const [invalid, setInvalid] = useState(false);
   const fieldRef = useRef(null);
   const frameRef = useRef(null);
