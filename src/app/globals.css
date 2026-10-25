@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+
+:root {
+  --background: #fcfaf8;
+  --foreground: #1c1a19;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-poppins: var(--font-poppins-face), ui-sans-serif, system-ui, sans-serif;
+
+  /* Part A ("studio") tokens — values live on .studio so the theme can swap them. */
+  --color-st-page: var(--st-page);
+  --color-st-surface: var(--st-surface);
+  --color-st-raised: var(--st-raised);
+  --color-st-panel: var(--st-panel);
+  --color-st-panel-border: var(--st-panel-border);
+  --color-st-card: var(--st-card);
+  --color-st-strip: var(--st-strip);
+  --color-st-strip-border: var(--st-strip-border);
+  --color-st-chip: var(--st-chip);
+  --color-st-pill: var(--st-pill);
+  --color-st-track: var(--st-track);
+  --color-st-segment: var(--st-segment);
+  --color-st-accent: var(--st-accent);
+  --color-st-accent-strong: var(--st-accent-strong);
+  --color-st-accent-ink: var(--st-accent-ink);
+  /* Dark label for coral buttons outside the mockup (≈7:1 contrast vs white-on-coral 2.2:1). */
+  --color-st-cta-ink: var(--st-cta-ink);
+  --color-st-indicator: var(--st-indicator);
+  --color-st-ink: var(--st-ink);
+  --color-st-ink-2: var(--st-ink-2);
+  --color-st-muted: var(--st-muted);
+  --color-st-faint: var(--st-faint);
+  --color-st-outline: var(--st-outline);
+  --color-st-danger: var(--st-danger);
+  --color-st-danger-soft: var(--st-danger-soft);
+  --shadow-st-prompt: 0 6px 14px -6px rgb(60 30 20 / 0.28);
+  --shadow-st-strip: 0 4px 18px -8px rgb(120 70 50 / 0.18);
+  --shadow-st-pop: 0 12px 32px -8px rgb(50 25 15 / 0.22), 0 0 0 1px rgb(50 25 15 / 0.06);
+
+  /* Part B ("workspace") tokens. */
+  --color-ws-bg: var(--ws-bg);
+  --color-ws-surface: var(--ws-surface);
+  --color-ws-raised: var(--ws-raised);
+  --color-ws-overlay: var(--ws-overlay);
+  --color-ws-line: var(--ws-line);
+  --color-ws-line-strong: var(--ws-line-strong);
+  --color-ws-text: var(--ws-text);
+  --color-ws-text-2: var(--ws-text-2);
+  --color-ws-muted: var(--ws-muted);
+  --color-ws-accent: var(--ws-accent);
+  --color-ws-accent-ink: var(--ws-accent-ink);
+  --color-ws-accent-soft: var(--ws-accent-soft);
+  --color-ws-danger: var(--ws-danger);
+  --color-ws-danger-soft: var(--ws-danger-soft);
+  --shadow-ws-pop: 0 16px 40px -12px rgb(0 0 0 / 0.7), 0 0 0 1px var(--ws-line-strong);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring, #c4664a);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Part A — studio theme (sampled from the reference mockup)
+   ------------------------------------------------------------------ */
+
+.studio {
+  --st-page: #fcfaf8;
+  --st-surface: #ffffff;
+  --st-raised: #ffffff;
+  --st-panel: #f8ede8;
+  --st-panel-border: #f1e1da;
+  --st-card: #f5ebe7;
+  --st-strip: #f9f3f0;
+  --st-strip-border: #f1e6e1;
+  --st-chip: #ffffff;
+  --st-pill: #f7f1ee;
+  --st-track: #f6e9e4;
+  --st-segment: #f3e1da;
+  --st-accent: #e39c85;
+  --st-accent-strong: #d4836a;
+  --st-accent-ink: #ffffff;
+  --st-cta-ink: #3a1a0f;
+  --st-indicator: #d9876c;
+  --st-ink: #1f1d1c;
+  --st-ink-2: #4a4543;
+  --st-muted: #6e6764; /* darkened from the sampled #8c8582 to meet 4.5:1 */
+  --st-faint: #b9b1ae;
+  --st-outline: #2b2b2b;
+  --st-danger: #b4432f;
+  --st-danger-soft: #fbe6e1;
+  --focus-ring: #c4664a;
+  color-scheme: light;
+  background: var(--st-page);
+  color: var(--st-ink);
+}
+
+/* Set on <html> by a pre-paint script (no flash) and by the theme toggle. */
+:root[data-studio-theme="dark"] .studio {
+  --st-page: #151312;
+  --st-surface: #1e1b1a;
+  --st-raised: #2a2624;
+  --st-panel: #1f1b1a;
+  --st-panel-border: #2e2826;
+  --st-card: #252120;
+  --st-strip: #1c1918;
+  --st-strip-border: #2c2725;
+  --st-chip: #2a2624;
+  --st-pill: #221e1d;
+  --st-track: #2e2725;
+  --st-segment: #3a302d;
+  --st-accent: #e39c85;
+  --st-accent-strong: #eba893;
+  --st-accent-ink: #2a120a;
+  --st-cta-ink: #2a120a;
+  --st-indicator: #e39c85;
+  --st-ink: #f3eeec;
+  --st-ink-2: #cfc7c4;
+  --st-muted: #9d9592;
+  --st-faint: #6f6865;
+  --st-outline: #d9d1ce;
+  --st-danger: #f09a86;
+  --st-danger-soft: #3a211b;
+  --focus-ring: #eba893;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------
+   Part B — workspace theme: graphite surfaces, one amber accent.
+   Text tokens are ≥4.5:1 on every surface; muted is for non-essential labels.
+   ------------------------------------------------------------------ */
+
+.ws {
+  --ws-bg: #0b0c0e;
+  --ws-surface: #111215;
+  --ws-raised: #18191d;
+  --ws-overlay: #1e2024;
+  --ws-line: #23252a;
+  --ws-line-strong: #30333a;
+  --ws-text: #ecebe7;
+  --ws-text-2: #b3b1ab;
+  --ws-muted: #8a8882;
+  --ws-accent: #f2b44f;
+  --ws-accent-ink: #1a1206;
+  --ws-accent-soft: rgb(242 180 79 / 0.13);
+  --ws-danger: #f39a86;
+  --ws-danger-soft: rgb(243 154 134 / 0.12);
+  --focus-ring: #f2b44f;
+  color-scheme: dark;
+  background: var(--ws-bg);
+  color: var(--ws-text);
+}
+
+.ws ::selection {
+  background: rgb(242 180 79 / 0.35);
+}
+
+/* Thin, quiet scrollbars for the workspace panels. */
+.ws-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ws-line-strong) transparent;
+}
+
+dialog.ws-dialog {
+  max-width: none;
+  max-height: none;
+}
+dialog.ws-dialog::backdrop {
+  background: rgb(4 5 6 / 0.78);
+}
+dialog.ws-dialog[open] {
+  animation: reveal 180ms ease-out;
+}
+
+/* Side drawer variant (branch panel on smaller screens). */
+dialog.ws-drawer[open] {
+  animation: drawer-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+.skeleton-ws {
+  background: linear-gradient(100deg, var(--ws-raised) 30%, var(--ws-overlay) 50%, var(--ws-raised) 70%) 0 0 / 250% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Horizontal scroller that fades out at the trailing edge (history strip). */
+.fade-x-end {
+  mask-image: linear-gradient(to right, #000 calc(100% - 96px), transparent);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Skeleton shimmer for pending results. */
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(100deg, var(--st-card) 30%, var(--st-panel) 50%, var(--st-card) 70%) 0 0 / 250% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+.animate-reveal {
+  animation: reveal 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes flash-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  30% {
+    box-shadow: 0 0 0 3px var(--st-accent);
+  }
+}
+.animate-flash {
+  animation: flash-ring 1.2s ease-out;
+}
+
+/* Native dialog: fade + backdrop. */
+dialog.st-dialog {
+  max-width: none;
+  max-height: none;
+}
+dialog.st-dialog::backdrop {
+  background: rgb(20 12 9 / 0.62);
+  backdrop-filter: blur(3px);
+}
+dialog.st-dialog[open] {
+  animation: reveal 200ms ease-out;
+}
