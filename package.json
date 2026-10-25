@@ -1,0 +1,30 @@
+{
+  "name": "fomi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "submission:pdf": "node scripts/build-submission-pdf.mjs"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.61.0",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/turbopack": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "marked": "^16.4.2",
+    "tailwindcss": "^4"
+  }
+}
