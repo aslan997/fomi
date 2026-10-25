@@ -73,8 +73,9 @@ body {
   color: var(--foreground);
 }
 
-/* Listboxes show focus via the highlighted option (aria-activedescendant). */
-:focus-visible:not([role="listbox"]) {
+/* Listboxes show focus via the highlighted option (aria-activedescendant);
+   [data-focus-ring="parent"] fields draw focus on their wrapping frame instead. */
+:focus-visible:not([role="listbox"], [data-focus-ring="parent"]) {
   outline: 2px solid var(--focus-ring, #c4664a);
   outline-offset: 2px;
 }

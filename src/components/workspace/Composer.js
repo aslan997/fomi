@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useId, useRef, useState } from "react";
 import clsx from "clsx";
-import { Aperture, ArrowUp, ChevronDown, Dices, GitBranch, LoaderCircle, Lock, LockOpen, Sparkle, X, Zap } from "lucide-react";
+import { Aperture, ArrowUp, ChevronDown, CircleAlert, Dices, GitBranch, LoaderCircle, Lock, LockOpen, Sparkle, X, Zap } from "lucide-react";
 import { Select } from "@/components/ui/Select";
 import { NEGATIVE_PROMPT_MAX_LENGTH, PROMPT_MAX_LENGTH } from "@/lib/generation-options";
 import { WS_COUNTS, WS_MODELS, WS_RATIOS, describeLook } from "@/lib/workspace/options";
@@ -150,62 +150,115 @@ function Advanced() {
   );
 }
 
-export function Composer() {
-  const { composer, updateComposer, submitComposer, pending, branchFromId } = useWorkspace();
-  const [hint, setHint] = useState(null);
-  const ref = useRef(null);
+const MIN_PROMPT = 3;
+
+function Kbd({ children }) {
+  return (
+    <kbd className="grid h-[18px] min-w-[18px] place-items-center rounded-[5px] border border-ws-line-strong bg-ws-raised px-1 font-sans text-[10px] leading-none text-ws-text-2">
+      {children}
+    </kbd>
+  );
+}
+
+/**
+ * The prompt is one field: the frame carries focus and validation states, the
+ * textarea grows with its content (CSS field-sizing), and a footer holds the
+ * character count, shortcut and any inline message.
+ */
+function PromptField({ invalid, onInvalidClear, onSubmit, fieldRef, frameRef }) {
+  const { composer, updateComposer, branchFromId } = useWorkspace();
   const id = useId();
+  const length = composer.prompt.length;
+  const nearLimit = length > PROMPT_MAX_LENGTH * 0.9;
+
+  return (
+    <div
+      ref={frameRef}
+      className={clsx(
+        "group rounded-xl border bg-ws-bg transition-[border-color,box-shadow] duration-150",
+        invalid
+          ? "border-ws-danger/70 shadow-[0_0_0_3px_rgb(243_154_134/0.12)]"
+          : "border-ws-line hover:border-ws-line-strong focus-within:border-ws-accent/60 focus-within:shadow-[0_0_0_3px_rgb(242_180_79/0.10)]"
+      )}
+    >
+      <label htmlFor={id} className="sr-only">
+        {branchFromId ? "Remix prompt" : "Prompt"}
+      </label>
+      <textarea
+        ref={fieldRef}
+        id={id}
+        data-ws-prompt
+        data-focus-ring="parent"
+        value={composer.prompt}
+        maxLength={PROMPT_MAX_LENGTH}
+        onChange={(e) => {
+          updateComposer({ prompt: e.target.value });
+          if (invalid) onInvalidClear();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) onSubmit(e);
+        }}
+        placeholder="Describe a scene, subject and light — e.g. model in a camel coat on a rain-soaked street at blue hour"
+        aria-invalid={invalid || undefined}
+        aria-describedby={`${id}-footer`}
+        className="block max-h-[40dvh] min-h-[124px] w-full resize-none bg-transparent px-3 pt-3 pb-1 text-[13px] leading-relaxed text-ws-text outline-none [field-sizing:content] placeholder:text-ws-muted"
+      />
+      <div id={`${id}-footer`} className="flex min-h-9 items-center gap-2 px-3 pb-2 text-[11px]">
+        {invalid ? (
+          <p role="alert" className="flex items-center gap-1.5 text-ws-danger">
+            <CircleAlert size={13} aria-hidden="true" />
+            Add a few words first
+          </p>
+        ) : (
+          <span className={clsx("tabular-nums", nearLimit ? "text-ws-accent" : "text-ws-muted")} aria-live={nearLimit ? "polite" : "off"}>
+            {length > 0 ? `${length.toLocaleString()} / ${PROMPT_MAX_LENGTH.toLocaleString()}` : `${MIN_PROMPT}+ characters`}
+          </span>
+        )}
+        <span className="ml-auto flex items-center gap-1 text-ws-muted">
+          <span className="sr-only">Press Control plus Enter to generate.</span>
+          <span aria-hidden="true" className="flex gap-1">
+            <Kbd>Ctrl</Kbd>
+            <Kbd>↵</Kbd>
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function Composer() {
+  const { composer, submitComposer, pending, branchFromId } = useWorkspace();
+  const [invalid, setInvalid] = useState(false);
+  const fieldRef = useRef(null);
+  const frameRef = useRef(null);
   const model = WS_MODELS.find((m) => m.id === composer.model);
 
   const submit = (e) => {
     e?.preventDefault();
     if (pending) return;
-    if (composer.prompt.trim().length < 3) {
-      setHint("Describe the direction first (3+ characters).");
-      ref.current?.focus();
+    if (composer.prompt.trim().length < MIN_PROMPT) {
+      setInvalid(true);
+      fieldRef.current?.focus();
+      // A short horizontal nudge confirms the press was received (skipped for reduced motion).
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        frameRef.current?.animate(
+          [{ transform: "translateX(0)" }, { transform: "translateX(-4px)" }, { transform: "translateX(4px)" }, { transform: "translateX(-2px)" }, { transform: "translateX(0)" }],
+          { duration: 260, easing: "ease-out" }
+        );
+      }
       return;
     }
-    setHint(null);
+    setInvalid(false);
     submitComposer();
   };
 
   return (
     <form onSubmit={submit} aria-label="Compose" className="flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-[13px] font-medium text-ws-text">{branchFromId ? "Remix" : "New direction"}</h2>
-        <span className="text-[11px] text-ws-muted">Ctrl + Enter</span>
-      </div>
+      <h2 className="text-[13px] font-medium text-ws-text">{branchFromId ? "Remix" : "New direction"}</h2>
 
       <BranchContext />
 
-      <div className="rounded-xl border border-ws-line bg-ws-bg focus-within:border-ws-line-strong">
-        <label htmlFor={id} className="sr-only">
-          Prompt
-        </label>
-        <textarea
-          ref={ref}
-          id={id}
-          data-ws-prompt
-          value={composer.prompt}
-          maxLength={PROMPT_MAX_LENGTH}
-          onChange={(e) => {
-            updateComposer({ prompt: e.target.value });
-            if (hint) setHint(null);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit(e);
-          }}
-          rows={6}
-          placeholder="Describe a scene, subject and light — e.g. model in a camel coat on a rain-soaked street at blue hour"
-          aria-describedby={hint ? `${id}-hint` : undefined}
-          className="block max-h-[40dvh] min-h-[132px] w-full resize-y rounded-xl bg-transparent px-3 py-2.5 text-[13px] leading-relaxed text-ws-text placeholder:text-ws-muted focus:outline-none"
-        />
-        {hint && (
-          <p id={`${id}-hint`} role="alert" className="px-3 pb-2 text-[11px] text-ws-danger">
-            {hint}
-          </p>
-        )}
-      </div>
+      <PromptField invalid={invalid} onInvalidClear={() => setInvalid(false)} onSubmit={submit} fieldRef={fieldRef} frameRef={frameRef} />
 
       <div>
         <span className={labelClass} aria-hidden="true">
